@@ -23,12 +23,16 @@ Tested with real Falcon 9 specifications.
 
 
 
-#Vertical Ascent Simulator (VAS-1)
+**#Vertical Ascent Simulator (VAS-1)**
 Aerospace Propulsion & Physics Model
 🚀 Project Overview
 This repository contains a Python-based flight dynamics simulator designed to model the vertical ascent of a heavy-lift launch vehicle (inspired by SpaceX Merlin-class propulsion). The simulation accounts for dynamic mass depletion, gravitational variance based on altitude, and Main Engine Cut-Off (MECO) parameters.
+
+
+
 🛠️ Technical Specifications
-The simulator utilizes Euler Integration to calculate the state of the vehicle at every 1-second interval.Gravitational Modeling: Uses the Universal Law of Gravitation rather than a constant 9.8/m/s^2accounting for the decrease in gravity as the rocket gains altitude.
+The simulator utilizes Euler Integration to calculate the state of the vehicle at every 1-second interval.
+Gravitational Modeling: Uses the Universal Law of Gravitation rather than a constant 9.8/m/s^2accounting for the decrease in gravity as the rocket gains altitude.
 Mass Flow Rate: Simulates a fuel burn rate of 2,000 kg/s, affecting the Thrust-to-Weight ratio (TWR) in real-time.
 
 .📊 Mission Profile Data
