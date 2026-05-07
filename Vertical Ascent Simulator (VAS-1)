@@ -1,0 +1,75 @@
+import matplotlib.pyplot as plt
+
+# --- SETTINGS ---
+G = 6.67430e-11
+M_EARTH = 5.972e24
+R_EARTH = 6371000
+
+# --- INITIAL STATE ---
+height = 0.0            # Height above surface (m)
+velocity = 0.0          # m/s
+mass_rocket = 500000    # Total mass at T-0 (kg)
+dry_mass = 50000        # Mass of the rocket with no fuel (kg)
+fuel_burn_rate = 2000   # kg/s
+thrust = 15000000       # Newtons (SpaceX Merlin-style power)
+time_step = 1           # Seconds
+duration = 300          # 5-minute flight
+
+# --- LOGS ---
+time_log, height_log, vel_log, mass_log = [], [], [], []
+
+# --- FLIGHT LOOP ---
+for t in range(duration):
+    # 1. Update distance from Earth's center
+    r = R_EARTH + height
+    
+    # 2. Calculate Gravity Force (Weight)
+    # F = G * (m1 * m2) / r^2
+    gravity_f = G * (M_EARTH * mass_rocket) / (r**2)
+    
+    # 3. Calculate Net Force (Thrust - Gravity)
+    if mass_rocket > dry_mass:
+        current_thrust = thrust
+        mass_rocket -= fuel_burn_rate * time_step
+    else:
+        current_thrust = 0  # Main Engine Cut-Off (MECO) - Out of fuel
+    
+    net_force = current_thrust - gravity_f
+    
+    # 4. Physics Update (Euler Integration)
+    acceleration = net_force / mass_rocket
+    velocity += acceleration * time_step
+    height += velocity * time_step
+    
+    # Safety Check: Rocket cannot go below ground
+    if height < 0:
+        height = 0
+        velocity = 0
+
+    # Log Data
+    time_log.append(t)
+    height_log.append(height / 1000) # Store in km for better graphing
+    vel_log.append(velocity)
+    mass_log.append(mass_rocket)
+
+# --- VISUALIZATION ---fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 12))
+
+# Graph 1: Height (km)
+ax1.plot(time_log, height_log, color='lime')
+ax1.set_ylabel('Height (km)')
+ax1.set_title('Mission Profile: Ascent')
+ax1.grid(True, alpha=0.3)
+
+# Graph 2: Velocity (m/s)
+ax2.plot(time_log, vel_log, color='cyan')
+ax2.set_ylabel('Velocity (m/s)')
+ax2.grid(True, alpha=0.3)
+
+# Graph 3: Rocket Mass (kg) - Seeing the fuel disappear
+ax3.plot(time_log, mass_log, color='orange')
+ax3.set_ylabel('Rocket Mass (kg)')
+ax3.set_xlabel('Time (seconds)')
+ax3.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
